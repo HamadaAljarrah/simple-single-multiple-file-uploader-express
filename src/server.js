@@ -1,5 +1,3 @@
-import dotenv from "dotenv"
-if(process.env.NODE_ENV !== "producation") dotenv.config();
 import express from "express"
 import fileUpload from "express-fileupload"
 import _ from "lodash"
@@ -7,15 +5,11 @@ import _ from "lodash"
 
 const app = express()
 app.set("views", "src/views")
-
 app.set("view-engine", "ejs")
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(fileUpload({createParentPath: true}))
-
-
-
 
 app.get("/", (req, res)=>{
     res.render("index.ejs")
@@ -39,6 +33,8 @@ app.post("/upload-img", async (req, res)=>{
             message: "file successfully uploaded",
             data: {
                 name: img.name,
+                mimetype: img.mimetype,
+                path: "./uploads/" + img.name,
                 size: img.size,
             }
         })
@@ -47,7 +43,6 @@ app.post("/upload-img", async (req, res)=>{
     }
 
 })
-
 
 //upload multiple files
 app.post("/upload-images", async (req, res)=>{
@@ -66,6 +61,7 @@ app.post("/upload-images", async (req, res)=>{
             data.push({
                 name: image.name,
                 mimetype: image.mimetype,
+                path: "./uploads/" + img.name,
                 size: image.size
             });
         })
@@ -81,8 +77,6 @@ app.post("/upload-images", async (req, res)=>{
     }
 
 })
-
-
 
 
 const port = process.env.PORT || 3000
